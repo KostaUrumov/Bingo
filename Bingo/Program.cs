@@ -9,17 +9,22 @@ namespace BingoProject
     internal class Program
     {
         static void Main(string[] args)
-        {    
+        {
             Stopwatch watch = new Stopwatch();
             watch.Start();
-                Dictionary <int, int[,]> tickets = new Dictionary<int, int[,]>();
-                Dictionary<int, int[,]> ticketsWonLine = new Dictionary<int, int[,]>();
-                Dictionary<int, int[,]> ticketsWonBingo = new Dictionary<int, int[,]>();
+            Dictionary<int, int[,]> tickets = new Dictionary<int, int[,]>();
+            Dictionary<int, int[,]> ticketsWonLine = new Dictionary<int, int[,]>();
+            Dictionary<int, int[,]> ticketsWonBingo = new Dictionary<int, int[,]>();
+            Random rnd = new Random();
+            int soldTickets = rnd.Next(0, 150);
+            double prise = double.Parse(Console.ReadLine());
+            double totalPrizemoney = soldTickets * prise * 0.85;
+            Console.WriteLine($"Bingo Owner won {totalPrizemoney * 0.85, 0:f2}BGN");
+
 
             while (true)
             {
-                Random rnd = new Random();
-                int soldTickets = rnd.Next(0, 150);
+                
                 for (int i = 0; i < soldTickets; i++)
                 {
                     int[,] ticket = new int[5, 5];
@@ -42,13 +47,13 @@ namespace BingoProject
 
                         }
                     }
-                    
+
                     tickets.Add(i, ticket);
                 }
 
-                    HashSet<int> calledNumbers = new HashSet<int>();
+                HashSet<int> calledNumbers = new HashSet<int>();
                 int linesAnnounced = 0;
-                
+
 
                 while (true)
                 {
@@ -102,13 +107,13 @@ namespace BingoProject
                                         int[,] matrixToAdd = tickets[m];
                                         ticketsWonBingo.Add(one, matrixToAdd);
                                     }
-                                    if(ticketsWonBingo.Count > 0)
+                                    if (ticketsWonBingo.Count > 0)
                                     {
                                         break;
                                     }
                                 }
 
-                                if(ticketsWonBingo.Count > 0)
+                                if (ticketsWonBingo.Count > 0)
                                 {
                                     break;
                                 }
@@ -137,12 +142,15 @@ namespace BingoProject
                             foreach (var bingo in ticketsWonLine.Keys)
                             {
                                 Console.WriteLine($"Ticket number {bingo + 1} won Line!");
+                                double stake = (totalPrizemoney - totalPrizemoney*0.15) / ticketsWonLine.Count;
+                                totalPrizemoney -= stake;
+                                Console.WriteLine($"Won stake {stake} BGN");
                                 continue;
                             }
 
                         }
-                    } 
-                    
+                    }
+
                     if (ticketsWonBingo.Count > 0)
                     {
                         break;
@@ -153,15 +161,17 @@ namespace BingoProject
                 {
                     foreach (var bingo in ticketsWonBingo.Keys)
                     {
-                        Console.WriteLine($"Ticket number {bingo+1} won Bingo!");
-                       watch.Stop();
+                        Console.WriteLine($"Ticket number {bingo + 1} won Bingo!");
+                        double stake = totalPrizemoney* ticketsWonBingo.Count;
+                        Console.WriteLine($"Won stake {stake, 0:f2} BGN");
+                        watch.Stop();
                         Console.WriteLine(watch.ElapsedMilliseconds);
                     }
                     break;
                 }
-                
+
             }
-            
+
         }
     }
 }
